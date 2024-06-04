@@ -1,23 +1,15 @@
 <%- include("includes/head.ejs") %>
     <div class="members">
         <p><b>MEMBERS</b></p>
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-        </tr>
-        <% for(user of users){ %>
-            <tr>
-                <td> <%= user.id %></td>
-                <td> <%= user.username %></td>
-                <td>
-                    <form method="get" action="/user/<%= user.id %>/edit">
-                        <button>edit</button>
-                    </form>
-                </td>
-            </tr>
-        <% } %>
-    </table>
+    <ul>
+        <li>Anubhav (Founder)</li>
+        <li>Manjeet (Co-Founder)</li>
+        <li>Nikhil (Ceo)</li>
+        <li>Swastika (Hr)</li>
+        <li>Raghav (Manager)</li>
+        <li>Riya (Supervisor)</li>
+        <li>Harsh (Worker)</li>
+    </ul>
     </div>
 </body>
 </html>
