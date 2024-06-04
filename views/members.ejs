@@ -1,0 +1,23 @@
+<%- include("includes/head.ejs") %>
+    <div class="members">
+        <p><b>MEMBERS</b></p>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+        <% for(user of users){ %>
+            <tr>
+                <td> <%= user.id %></td>
+                <td> <%= user.username %></td>
+                <td>
+                    <form method="get" action="/user/<%= user.id %>/edit">
+                        <button>edit</button>
+                    </form>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+    </div>
+</body>
+</html>
