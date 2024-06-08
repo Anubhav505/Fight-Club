@@ -1,29 +1,21 @@
-*{
-    margin: 0px;
+.box {
+    background-color: #1e1e1e;
 }
 
-body{
-    background-color: #d5cabdc1;
+.navbar {
+    background-color: rgb(137, 112, 217) !important;
 }
-
-.buttons{
-    background-color: #D65DB1;
+.navbar a{
+    color: white !important;
+}
+.navbar-options{
     display: flex;
-    justify-content: space-between;
 }
 
-.btn{
-    background-color: #D65DB1;
-    border-color: #D65DB1;
-    color: white;
-}
-
-.brand-name{
-    margin: 0;
-    font-family:"Jersey 10 Charted" ;
-    font-weight: 400;
-    font-style: normal;
-    font-size: xx-large;
+.navbar-signin{
+    position: fixed;
+        right: 10px; /* Adjust as needed */
+        cursor: pointer;
 }
 
 .home{
@@ -65,17 +57,9 @@ body{
     height: 80vh;
 }
 
-.signup{
-    padding: 30px;
-    width: 350px;
-    height: 230px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 10px;
-    background-color:#8e4a9685;
+
+.signin {
+    border: 2px solid white;
 }
 
 .form-name{
@@ -87,10 +71,10 @@ body{
 }
 
 .form-text{
-    border-color: black;
+
     width: 270px;
     height: 40px;
-    background-color: #ffffff7e;
+    background-color: white;
 }
 
 .submit{

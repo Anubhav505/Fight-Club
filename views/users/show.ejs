@@ -1,0 +1,13 @@
+<%= layout("/layouts/boilerplate") %>
+    <div>
+        <h3>User Details</h3>
+        <div>
+            <p>
+                <b>
+                    <%= user.username %>
+                </b>
+            </p>
+        </div><br>
+        <div class="btns">
+            <a href="/users/<%= user._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
+        </div>

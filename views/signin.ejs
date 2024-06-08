@@ -1,17 +1,11 @@
-<%- include("includes/head.ejs") %>
-    <div class="container">
-        <div class="signup border border-black p-2 mb-2 border-opacity-50">
-            <div class="form-name">
-                FIGHT CLUB
-            </div>
-            <div>
-                <form method="post" action="http://localhost:3000/home.ejs/" class="mb-3">
-                    <input class="form-text form-control form-control-sm" type="text" placeholder="Phone number, Username, or Email" aria-label=".form-control-sm example">
-                    <input class="form-text form-control form-control-sm" type="password" placeholder="Password" aria-label=".form-control-sm example">
-                    <button type="submit" class="btn btn-primary form-text submit">Submit</button>
-                </form>
-            </div>
+<%= layout("/layouts/boilerplate") %>
+    <div class="signin">
+        <div class="form-name">
+            FIGHT CLUB
         </div>
+        <form method="post" action="/">
+            <input class="form-text form-control form-control-sm" type="text" placeholder="Phone number, Username, or Email">
+            <input class="form-text form-control form-control-sm" type="password" placeholder="Password">
+            <button type="submit" class="btn btn-primary form-text submit">Submit</button>
+        </form>
     </div>
-</body>
-</html>

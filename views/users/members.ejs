@@ -1,0 +1,12 @@
+<%= layout("/layouts/boilerplate") %>
+    <div class="mt-3">
+        <p><b>Sign In</b> to become Member of <b>FIGHT CLUB</b></B></p>
+        <h3>Members</h3>
+    <ul>
+        <% for(let user of allUsers) { %>
+            <li>
+                <a class="username" href="/users/<%= user._id %>/edit"><%= user.username %></a>
+            </li>
+            <% } %>
+    </ul>
+    </div>

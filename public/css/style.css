@@ -1,0 +1,82 @@
+/* body{
+    background-color: #1e1e1e !important;
+} */
+
+.navbar {
+    background-color: rgb(137, 112, 217) !important;
+}
+
+.navbar a {
+    color: white;
+}
+
+.navbar-options {
+    display: flex;
+}
+
+.navbar-signin {
+    position: fixed;
+    right: 10px;
+    cursor: pointer;
+}
+
+/* Home Page */
+.home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    color: rgb(137, 112, 217);
+    /* color: #88498F; */
+    font-family: "Jersey 10 Charted";
+    font-weight: 400;
+    font-style: normal;
+    font-size: 100px;
+}
+
+/* Members */
+.username{
+    color: black;
+    text-decoration: none;
+}
+
+.username:hover{
+    color: blue;
+}
+
+/* SignIn */
+.signin {
+    background-color: rgba(0, 0, 255, 0.3);
+    width: 300px;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 3%;
+}
+
+.form-name {
+    display: flex;
+    justify-content: center;
+    font-family: "Kalam", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: xx-large;
+}
+
+.submit {
+    border: none !important;
+}
+
+/* Edit Form */
+.editForm{
+    background-color: rgba(0, 0, 255, 0.3);
+    width: 300px;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 3%;
+}
