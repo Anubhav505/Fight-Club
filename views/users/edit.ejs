@@ -1,13 +1,12 @@
-<%= layout("/layouts/boilerplate") %>
+<%= layout("layouts/boilerplate") %>
 
 <div class="editForm">
     <div class="form-name">
         Edit Username
     </div>
-    <form method="post" action="/users/<%= user._id %>?_method=PUT">
-        <input class="form-text form-control form-control-sm" type="text" name="username" value="<%= user.username %>">
+    <form method="post" action="/members/<%= user._id %>?_method=PATCH">
+        <input class="form-text form-control form-control-sm" type="text" name="user[username]" value="<%= user.username %>">
         <input class="form-text form-control form-control-sm" type="password" name="password" placeholder="Enter Password">
         <button type="submit" class="btn btn-primary btn-dark form-text submit form-control">Edit</button>
     </form>
 </div>
-
