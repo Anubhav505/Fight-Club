@@ -1,0 +1,32 @@
+#messages {
+  height: 540px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+#messages li{
+  background-color: #ccc;
+  margin: 10px;
+  list-style: none;
+}
+
+#form {
+  display: flex;
+  margin-top: 10px;
+}
+#input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  height: 2.5rem;
+}
+button {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  color: white;
+}

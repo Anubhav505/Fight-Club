@@ -1,16 +1,27 @@
 const express = require("express");
-const app = express("");
-const User = require("./models/listings");
+const http = require("http");
+const { Server } = require("socket.io");
+const User = require("./models/listings"); // Ensure this is your correct model
+const Message = require("./models/message"); // Import the Message model
 const path = require("path");
-engine = require("ejs-mate");
+const engine = require("ejs-mate");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 
-main().catch((err) => console.log(err));
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/fightclub");
+  try {
+    await mongoose.connect("mongodb://127.0.0.1:27017/fightclub");
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("Connection error:", err);
+  }
 }
+
+main();
 
 app.engine("ejs", engine);
 app.set("view engine", "ejs");
@@ -19,64 +30,85 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-//1st page when open website
+// Routes
 app.get("/", (req, res) => {
   res.redirect("/members/new");
 });
-//Root
 app.get("/home", (req, res) => {
   res.render("users/home");
 });
-//Normal Web-Page
-app.get("/rules", (req, res) => {
-  res.render("users/rules");
-});
-
-//Index Rout
 app.get("/members", async (req, res) => {
   const allMembers = await User.find();
   res.render("users/members", { allMembers });
 });
-
-//Create Rout
 app.get("/members/new", (req, res) => {
   res.render("users/new");
 });
-
 app.post("/members", async (req, res) => {
   const newUser = new User(req.body.user);
   await newUser.save();
   res.redirect("/members");
 });
-
-//show Rout
 app.get("/members/:id", async (req, res) => {
   let { id } = req.params;
   let user = await User.findById(id);
   res.render("users/show", { user });
 });
-
-//Edit Rout
 app.get("/members/:id/edit", async (req, res) => {
   let { id } = req.params;
   let user = await User.findById(id);
   res.render("users/edit", { user });
 });
-
 app.patch("/members/:id", async (req, res) => {
   let { id } = req.params;
   await User.findByIdAndUpdate(id, { ...req.body.user });
   res.redirect(`/members/${id}`);
 });
-
-//Delete Rout
 app.delete("/members/:id", async (req, res) => {
   let { id } = req.params;
-  let deletedUser = await User.findByIdAndDelete(id);
-  console.log(deletedUser);
+  await User.findByIdAndDelete(id);
   res.redirect("/members");
 });
+app.get("/chat", async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ timestamp: 1 }).exec();
+    res.render("users/chat", { messages }); // Pass messages to the template
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res.render("users/chat", { messages: [] }); // Pass an empty array in case of error
+  }
+});
 
-app.listen(8080, () => {
-  console.log("server is listening to 8080");
+// Socket.io for chat
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  // Load previous messages
+  (async () => {
+    try {
+      const messages = await Message.find().sort({ timestamp: 1 }).exec();
+      socket.emit("load messages", messages);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  })();
+
+  socket.on("chat message", async (msg) => {
+    const message = new Message({ text: msg.text, timestamp: new Date() });
+    try {
+      await message.save();
+      io.emit("chat message", message); // Broadcast to all clients
+    } catch (err) {
+      console.error("Error saving message:", err);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
+
+server.listen(8080, () => {
+  console.log("Server is listening on port 8080");
 });

@@ -1,19 +1,35 @@
-<nav class="navbar navbar-expand-md border-bottom sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/home">FIGHT CLUB</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <div class="navbar-options">
-                <a class="nav-link" aria-current="page" href="/members">Members</a>
-                <a class="nav-link" href="/rules">Rules</a>
-            </div>
-            <div class="navbar-signin">
-                <a class="nav-link" href="/members/new">SIGN IN</a>
-            </div>
-        </div>
-      </div>
+<div class="navbar">
+  <div class="navbar-a">
+    <div>
+      <a class="brand-name" href="/home">FIGHT CLUB</a>
     </div>
-  </nav>
+    <div>
+      <a class="members" href="/members">Members</a>
+    </div>
+    <div>
+      <a class="members" href="/chat">Chat</a>
+    </div>
+  </div>
+  <div class="navbar-b">
+    <div>
+    <div class="song">
+      <span class="material-symbols-outlined" id="playPause">play_arrow</span>
+      <span id="currentTime">00:00</span>
+      <progress
+        class="progress-bar"
+        id="progressBar"
+        value="0"
+        max="100"
+      ></progress>
+      <span id="duration">3:37</span>
+    </div>
+
+    <audio id="myAudio">
+      <source src="/music/wmm.mp3" type="audio/mpeg" />
+    </audio>
+  </div>
+  <div>
+    <a href="/members/new">SIGN IN</a>
+  </div>
+  </div>
+</div>

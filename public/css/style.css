@@ -1,52 +1,48 @@
-/* body{
-    background-color: #1e1e1e !important;
-} */
-
-.navbar {
-    background-color: rgb(137, 112, 217) !important;
+html {
+    height: 100%;
 }
 
-.navbar a {
-    color: white;
-}
-
-.navbar-options {
+body {
     display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure full height of viewport */
+    margin: 0; /* Remove default margin */
+    background-image: url("http://images5.fanpop.com/image/photos/30000000/Fight-Club-HD-fight-club-30031933-1280-534.jpg");
+    background-size: cover;
+    background-attachment: fixed; /* Optional: Fix background image in place */
 }
 
-.navbar-signin {
-    position: fixed;
-    right: 10px;
-    cursor: pointer;
+/* Ensure the content area grows to push footer to the bottom */
+.content {
+    flex: 1;
+    padding: 10px; /* Optional: Add padding to avoid content touching edges */
 }
 
 /* Home Page */
 .home {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    color: rgb(137, 112, 217);
-    /* color: #88498F; */
+    position: absolute;
+    left: 10px;
+    top: 44vh;
+    color: red;
     font-family: "Jersey 10 Charted";
     font-weight: 400;
     font-style: normal;
-    font-size: 100px;
+    font-size: 90px;
+    opacity: 0.8;
 }
 
 /* Members */
-.username{
+.username {
     color: black;
     text-decoration: none;
 }
 
-.username:hover{
+.username:hover {
     color: blue;
 }
 
 /* SignIn */
 .signin {
-    background-color: rgba(0, 0, 255, 0.3);
     width: 300px;
     padding: 20px;
     position: fixed;
@@ -56,7 +52,9 @@
     border-radius: 3%;
 }
 
+/* Form labels and submit button */
 .form-name {
+    color: white;
     display: flex;
     justify-content: center;
     font-family: "Kalam", cursive;
@@ -70,7 +68,7 @@
 }
 
 /* Edit Form */
-.editForm{
+.editForm {
     background-color: rgba(0, 0, 255, 0.3);
     width: 300px;
     padding: 20px;

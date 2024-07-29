@@ -1,0 +1,37 @@
+.navbar {
+  background-color: white;
+  opacity: 0.5;
+  height: 4rem;
+}
+
+.brand-name{
+    font-size: xx-large !important;
+}
+
+.members{
+    position: relative;
+    top: 10px;
+}
+
+.navbar-a{
+    display: flex;
+    margin-left: 3rem;
+    gap: 20px;
+}
+
+.navbar-b{
+    margin-right: 3rem;
+    display: flex;
+    gap:20px
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #113142;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  color: red;
+}
