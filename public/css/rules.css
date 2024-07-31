@@ -2,9 +2,11 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
-  height: 50vh; /* Adjust height for visible area */
   overflow: hidden;
-  position: relative;
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  width: 100%;
   color: white;
   font-size: medium;
 }
@@ -12,8 +14,7 @@
 .rules li {
   position: absolute;
   width: 100%;
-  top: -50px; /* Start above the visible area */
-  animation: drop 15s forwards infinite;
+  animation: drop 20s forwards infinite;
   animation-delay: calc(1s * var(--i));
   opacity: 0;
 }

@@ -1,37 +1,13 @@
 .navbar {
-  background-color: white;
-  opacity: 0.5;
-  height: 4rem;
+  background-color: rgba(147, 176, 184, 0.5);
+  z-index: 1000000000000000000000000;
 }
 
-.brand-name{
-    font-size: xx-large !important;
+.navbar-brand{
+  color: rgb(11, 31, 42);
 }
 
-.members{
-    position: relative;
-    top: 10px;
-}
-
-.navbar-a{
-    display: flex;
-    margin-left: 3rem;
-    gap: 20px;
-}
-
-.navbar-b{
-    margin-right: 3rem;
-    display: flex;
-    gap:20px
-}
-
-.navbar a {
-  text-decoration: none;
-  color: #113142;
-  font-size: x-large;
+.nav-link {
   font-weight: bold;
-}
-
-.navbar a:hover {
-  color: red;
+  color: rgba(11, 31, 42, 0.5);
 }

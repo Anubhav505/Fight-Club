@@ -1,80 +1,89 @@
 html {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ensure full height of viewport */
-    margin: 0; /* Remove default margin */
-    background-image: url("http://images5.fanpop.com/image/photos/30000000/Fight-Club-HD-fight-club-30031933-1280-534.jpg");
-    background-size: cover;
-    background-attachment: fixed; /* Optional: Fix background image in place */
+  background-image: url("https://i.pinimg.com/736x/90/46/77/904677595a038663278c571991b107e1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 /* Ensure the content area grows to push footer to the bottom */
 .content {
-    flex: 1;
-    padding: 10px; /* Optional: Add padding to avoid content touching edges */
+  flex: 1;
+  padding: 10px; /* Optional: Add padding to avoid content touching edges */
 }
 
 /* Home Page */
 .home {
-    position: absolute;
-    left: 10px;
-    top: 44vh;
-    color: red;
-    font-family: "Jersey 10 Charted";
-    font-weight: 400;
-    font-style: normal;
-    font-size: 90px;
-    opacity: 0.8;
+  position: absolute;
+  left: 10px;
+  top: 44vh;
+  color: red;
+  font-family: "Jersey 10 Charted";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 90px;
+  opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+  .home {
+    font-size: 50px;
+
+    top: 250px;
+  }
 }
 
 /* Members */
 .username {
-    color: black;
-    text-decoration: none;
+  color: black;
+  text-decoration: none;
 }
 
 .username:hover {
-    color: blue;
+  color: blue;
 }
 
 /* SignIn */
 .signin {
-    width: 300px;
-    padding: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 3%;
+  width: 300px;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 3%;
 }
 
 /* Form labels and submit button */
 .form-name {
-    color: white;
-    display: flex;
-    justify-content: center;
-    font-family: "Kalam", cursive;
-    font-weight: 400;
-    font-style: normal;
-    font-size: xx-large;
+  color: white;
+  display: flex;
+  justify-content: center;
+  font-family: "Kalam", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: xx-large;
 }
 
 .submit {
-    border: none !important;
+  border: none !important;
 }
 
 /* Edit Form */
 .editForm {
-    background-color: rgba(0, 0, 255, 0.3);
-    width: 300px;
-    padding: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 3%;
+  background-color: rgba(0, 0, 255, 0.3);
+  width: 300px;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 3%;
 }
