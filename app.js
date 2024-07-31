@@ -20,7 +20,7 @@ main()
     console.log("Connected to DB");
   })
   .catch((err) => {
-    console.log(err);
+    console.log("Database connection error:", err);
   });
 
 async function main() {
@@ -32,6 +32,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Added middleware for JSON requests
 app.use(methodOverride("_method"));
 
 // Routes
@@ -85,10 +86,10 @@ app.delete("/members/:id", async (req, res) => {
 app.get("/chat", async (req, res) => {
   try {
     const messages = await Message.find().sort({ timestamp: 1 }).exec();
-    res.render("users/chat", { messages }); // Pass messages to the template
+    res.render("users/chat", { messages });
   } catch (err) {
     console.error("Error fetching messages:", err);
-    res.render("users/chat", { messages: [] }); // Pass an empty array in case of error
+    res.render("users/chat", { messages: [] });
   }
 });
 
@@ -100,7 +101,6 @@ io.on("connection", (socket) => {
   (async () => {
     try {
       const messages = await Message.find().sort({ timestamp: 1 }).exec();
-      console.log("Loaded messages from DB:", messages); // Debugging
       socket.emit("load messages", messages);
     } catch (err) {
       console.error("Error fetching messages:", err);
@@ -111,7 +111,6 @@ io.on("connection", (socket) => {
     const message = new Message({ text: msg.text, timestamp: new Date() });
     try {
       await message.save();
-      console.log("Saved message:", message); // Debugging
       io.emit("chat message", message); // Broadcast to all clients
     } catch (err) {
       console.error("Error saving message:", err);
@@ -121,6 +120,12 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 server.listen(8080, () => {
