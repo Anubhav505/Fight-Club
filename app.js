@@ -20,7 +20,7 @@ const dbUrl = process.env.ATLASDB_URL;
 
 if (!dbUrl) {
   console.error("Database URL is not defined in environment variables.");
-  process.exit(1); // Exit the process if the DB URL is missing
+  process.exit(1);
 }
 
 mongoose
@@ -31,7 +31,7 @@ mongoose
 app.engine("ejs", engine);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
@@ -57,80 +57,72 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get("/", (req, res) => {
-  res.redirect("/home");
-});
+app.get("/", (req, res) => res.redirect("/home"));
 
-app.get("/home", (req, res) => {
-  res.render("home");
-});
+app.get("/home", (req, res) => res.render("home"));
 
 // Authentication routes
-app.get("/login", (req, res) => {
-  res.render("login");
-});
+app
+  .route("/login")
+  .get((req, res) => res.render("login"))
+  .post(
+    passport.authenticate("local", {
+      successRedirect: "/home",
+      failureRedirect: "/login",
+      failureFlash: true,
+    })
+  );
 
-app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/home",
-    failureRedirect: "/login",
-    failureFlash: true,
-  })
-);
-
-app.get("/logout", (req, res) => {
+app.get("/logout", (req, res, next) => {
   req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
     req.flash("success_msg", "You are logged out");
     res.redirect("/login");
   });
 });
 
 // Chat page
-app.get("/chat", async (req, res) => {
-  if (!req.isAuthenticated()) {
-    req.flash("error_msg", "Please log in to view this page.");
-    return res.redirect("/login");
-  }
+app
+  .route("/chat")
+  .get(async (req, res) => {
+    if (!req.isAuthenticated()) {
+      req.flash("error_msg", "Please log in to view this page.");
+      return res.redirect("/login");
+    }
 
-  try {
-    const messages = await Message.find()
-      .populate("user")
-      .sort({ timestamp: 1 })
-      .exec();
-    res.render("chat", { messages });
-  } catch (err) {
-    console.error("Error fetching messages:", err);
-    res.render("chat", { messages: [] });
-  }
-});
+    try {
+      const messages = await Message.find()
+        .populate("user")
+        .sort({ timestamp: 1 })
+        .exec();
+      res.render("chat", { messages });
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+      res.render("chat", { messages: [] });
+    }
+  })
+  .post(async (req, res) => {
+    if (!req.isAuthenticated()) {
+      req.flash("error_msg", "You need to log in first!");
+      return res.redirect("/login");
+    }
 
-app.post("/chat", (req, res) => {
-  if (!req.isAuthenticated()) {
-    req.flash("error_msg", "You need to log in first!");
-    return res.redirect("/login");
-  }
+    const { text } = req.body;
+    const message = new Message({
+      text,
+      timestamp: new Date(),
+      user: req.user._id,
+    });
 
-  const { text } = req.body;
-  const message = new Message({
-    text,
-    timestamp: new Date(),
-    user: req.user._id,
-  });
-  message
-    .save()
-    .then(() => {
+    try {
+      await message.save();
       req.flash("success_msg", "Message sent");
       res.redirect("/chat");
-    })
-    .catch((err) => {
+    } catch (err) {
       req.flash("error_msg", "Error sending message");
       res.redirect("/chat");
-    });
-});
+    }
+  });
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
