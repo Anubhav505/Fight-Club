@@ -1,0 +1,19 @@
+<%= layout("layouts/boilerplate") %>
+
+  <div id="messages">
+    <% messages.forEach(message => { %>
+      <div class="message">
+        <p><%= message.user ? message.user.username : 'Unknown' %>: <%= message.text %></p>
+        <small><%= new Date(message.timestamp).toLocaleTimeString() %></small>
+      </div>
+    <% }) %>
+  </div>
+
+  <form action="/chat" method="POST" id="messageForm">
+    <textarea name="text" placeholder="Type your message here..." required></textarea>
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="/js/audio.js"></script>
+</body>
+</html>

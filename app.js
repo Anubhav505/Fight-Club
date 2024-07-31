@@ -1,18 +1,21 @@
 require("dotenv").config();
 const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
-const User = require("./models/listings"); // Ensure this is your correct model
-const Message = require("./models/Message"); // Import the Message model
 const path = require("path");
 const engine = require("ejs-mate");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const flash = require("connect-flash");
+const User = require("./models/listings"); // Ensure this is your correct model
+const Message = require("./models/Message"); // Import the Message model
+
+// Passport configuration
+require("./config/passport-config");
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 
+// Connect to MongoDB
 const dbUrl = process.env.ATLASDB_URL;
 
 if (!dbUrl) {
@@ -20,7 +23,6 @@ if (!dbUrl) {
   process.exit(1); // Exit the process if the DB URL is missing
 }
 
-// Connect to MongoDB
 mongoose
   .connect(dbUrl)
   .then(() => console.log("Connected to DB"))
@@ -31,132 +33,106 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // Added middleware for JSON requests
+app.use(express.json());
 app.use(methodOverride("_method"));
+
+// Session and Passport initialization
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+// Global middleware for flash messages
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  res.locals.user = req.user;
+  next();
+});
 
 // Routes
 app.get("/", (req, res) => {
-  res.redirect("/members/new");
+  res.redirect("/home");
 });
 
 app.get("/home", (req, res) => {
-  res.render("users/home");
+  res.render("home");
 });
 
-app.get("/members", async (req, res) => {
-  try {
-    const allMembers = await User.find();
-    res.render("users/members", { allMembers });
-  } catch (err) {
-    console.error("Error fetching members:", err);
-    res.render("users/members", { allMembers: [] });
-  }
+// Authentication routes
+app.get("/login", (req, res) => {
+  res.render("login");
 });
 
-app.get("/members/new", (req, res) => {
-  res.render("users/new");
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/home",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
+
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    req.flash("success_msg", "You are logged out");
+    res.redirect("/login");
+  });
 });
 
-app.post("/members", async (req, res) => {
-  try {
-    const newUser = new User(req.body.user);
-    await newUser.save();
-    res.redirect("/members");
-  } catch (err) {
-    console.error("Error creating new member:", err);
-    res.redirect("/members/new");
-  }
-});
-
-app.get("/members/:id", async (req, res) => {
-  try {
-    let { id } = req.params;
-    let user = await User.findById(id);
-    res.render("users/show", { user });
-  } catch (err) {
-    console.error("Error fetching member:", err);
-    res.redirect("/members");
-  }
-});
-
-app.get("/members/:id/edit", async (req, res) => {
-  try {
-    let { id } = req.params;
-    let user = await User.findById(id);
-    res.render("users/edit", { user });
-  } catch (err) {
-    console.error("Error fetching member for edit:", err);
-    res.redirect("/members");
-  }
-});
-
-app.patch("/members/:id", async (req, res) => {
-  try {
-    let { id } = req.params;
-    await User.findByIdAndUpdate(id, { ...req.body.user });
-    res.redirect(`/members/${id}`);
-  } catch (err) {
-    console.error("Error updating member:", err);
-    res.redirect(`/members/${id}/edit`);
-  }
-});
-
-app.delete("/members/:id", async (req, res) => {
-  try {
-    let { id } = req.params;
-    await User.findByIdAndDelete(id);
-    res.redirect("/members");
-  } catch (err) {
-    console.error("Error deleting member:", err);
-    res.redirect("/members");
-  }
-});
-
+// Chat page
 app.get("/chat", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash("error_msg", "Please log in to view this page.");
+    return res.redirect("/login");
+  }
+
   try {
-    const messages = await Message.find().sort({ timestamp: 1 }).exec();
-    res.render("users/chat", { messages });
+    const messages = await Message.find()
+      .populate("user")
+      .sort({ timestamp: 1 })
+      .exec();
+    res.render("chat", { messages });
   } catch (err) {
     console.error("Error fetching messages:", err);
-    res.render("users/chat", { messages: [] });
+    res.render("chat", { messages: [] });
   }
 });
 
-// Socket.io for chat
-io.on("connection", (socket) => {
-  console.log("A user connected");
+app.post("/chat", (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.flash("error_msg", "You need to log in first!");
+    return res.redirect("/login");
+  }
 
-  // Load previous messages
-  (async () => {
-    try {
-      const messages = await Message.find().sort({ timestamp: 1 }).exec();
-      socket.emit("load messages", messages);
-    } catch (err) {
-      console.error("Error fetching messages:", err);
-    }
-  })();
-
-  socket.on("chat message", async (msg) => {
-    const message = new Message({ text: msg.text, timestamp: new Date() });
-    try {
-      await message.save();
-      io.emit("chat message", message); // Broadcast to all clients
-    } catch (err) {
-      console.error("Error saving message:", err);
-    }
+  const { text } = req.body;
+  const message = new Message({
+    text,
+    timestamp: new Date(),
+    user: req.user._id,
   });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
+  message
+    .save()
+    .then(() => {
+      req.flash("success_msg", "Message sent");
+      res.redirect("/chat");
+    })
+    .catch((err) => {
+      req.flash("error_msg", "Error sending message");
+      res.redirect("/chat");
+    });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-});
-
-server.listen(8080, () => {
-  console.log("Server is listening on port 8080");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
