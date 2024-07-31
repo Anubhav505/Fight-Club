@@ -15,17 +15,16 @@ const io = new Server(server);
 
 const dbUrl = process.env.ATLASDB_URL;
 
-main()
-  .then(() => {
-    console.log("Connected to DB");
-  })
-  .catch((err) => {
-    console.log("Database connection error:", err);
-  });
-
-async function main() {
-  await mongoose.connect(dbUrl);
+if (!dbUrl) {
+  console.error("Database URL is not defined in environment variables.");
+  process.exit(1); // Exit the process if the DB URL is missing
 }
+
+// Connect to MongoDB
+mongoose
+  .connect(dbUrl)
+  .then(() => console.log("Connected to DB"))
+  .catch((err) => console.error("Database connection error:", err));
 
 app.engine("ejs", engine);
 app.set("view engine", "ejs");
@@ -45,8 +44,13 @@ app.get("/home", (req, res) => {
 });
 
 app.get("/members", async (req, res) => {
-  const allMembers = await User.find();
-  res.render("users/members", { allMembers });
+  try {
+    const allMembers = await User.find();
+    res.render("users/members", { allMembers });
+  } catch (err) {
+    console.error("Error fetching members:", err);
+    res.render("users/members", { allMembers: [] });
+  }
 });
 
 app.get("/members/new", (req, res) => {
@@ -54,33 +58,58 @@ app.get("/members/new", (req, res) => {
 });
 
 app.post("/members", async (req, res) => {
-  const newUser = new User(req.body.user);
-  await newUser.save();
-  res.redirect("/members");
+  try {
+    const newUser = new User(req.body.user);
+    await newUser.save();
+    res.redirect("/members");
+  } catch (err) {
+    console.error("Error creating new member:", err);
+    res.redirect("/members/new");
+  }
 });
 
 app.get("/members/:id", async (req, res) => {
-  let { id } = req.params;
-  let user = await User.findById(id);
-  res.render("users/show", { user });
+  try {
+    let { id } = req.params;
+    let user = await User.findById(id);
+    res.render("users/show", { user });
+  } catch (err) {
+    console.error("Error fetching member:", err);
+    res.redirect("/members");
+  }
 });
 
 app.get("/members/:id/edit", async (req, res) => {
-  let { id } = req.params;
-  let user = await User.findById(id);
-  res.render("users/edit", { user });
+  try {
+    let { id } = req.params;
+    let user = await User.findById(id);
+    res.render("users/edit", { user });
+  } catch (err) {
+    console.error("Error fetching member for edit:", err);
+    res.redirect("/members");
+  }
 });
 
 app.patch("/members/:id", async (req, res) => {
-  let { id } = req.params;
-  await User.findByIdAndUpdate(id, { ...req.body.user });
-  res.redirect(`/members/${id}`);
+  try {
+    let { id } = req.params;
+    await User.findByIdAndUpdate(id, { ...req.body.user });
+    res.redirect(`/members/${id}`);
+  } catch (err) {
+    console.error("Error updating member:", err);
+    res.redirect(`/members/${id}/edit`);
+  }
 });
 
 app.delete("/members/:id", async (req, res) => {
-  let { id } = req.params;
-  await User.findByIdAndDelete(id);
-  res.redirect("/members");
+  try {
+    let { id } = req.params;
+    await User.findByIdAndDelete(id);
+    res.redirect("/members");
+  } catch (err) {
+    console.error("Error deleting member:", err);
+    res.redirect("/members");
+  }
 });
 
 app.get("/chat", async (req, res) => {

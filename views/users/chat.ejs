@@ -28,6 +28,7 @@
 
         // Handle incoming messages
         socket.on('load messages', (messages) => {
+            console.log('Loaded messages:', messages); // Debugging
             const messagesDiv = document.getElementById('messages');
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
@@ -38,6 +39,7 @@
         });
 
         socket.on('chat message', (message) => {
+            console.log('Received chat message:', message); // Debugging
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
