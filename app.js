@@ -100,6 +100,7 @@ io.on("connection", (socket) => {
   (async () => {
     try {
       const messages = await Message.find().sort({ timestamp: 1 }).exec();
+      console.log("Loaded messages from DB:", messages); // Debugging
       socket.emit("load messages", messages);
     } catch (err) {
       console.error("Error fetching messages:", err);
@@ -110,6 +111,7 @@ io.on("connection", (socket) => {
     const message = new Message({ text: msg.text, timestamp: new Date() });
     try {
       await message.save();
+      console.log("Saved message:", message); // Debugging
       io.emit("chat message", message); // Broadcast to all clients
     } catch (err) {
       console.error("Error saving message:", err);

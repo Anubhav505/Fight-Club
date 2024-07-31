@@ -7,12 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle receiving messages
   socket.on("load messages", (msgs) => {
+    console.log("Loaded messages:", msgs); // Debugging
     msgs.forEach((msg) => {
       addMessageToList(msg);
     });
   });
 
   socket.on("chat message", (message) => {
+    console.log("Received chat message:", message); // Debugging
     addMessageToList(message);
   });
 
@@ -38,4 +40,3 @@ document.addEventListener("DOMContentLoaded", () => {
     messages.scrollTop = messages.scrollHeight;
   }
 });
-// 
