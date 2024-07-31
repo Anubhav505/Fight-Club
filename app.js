@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -12,16 +13,19 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-async function main() {
-  try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/fightclub");
-    console.log("MongoDB connected");
-  } catch (err) {
-    console.error("Connection error:", err);
-  }
-}
+const dbUrl = process.env.ATLASDB_URL;
 
-main();
+main()
+  .then(() => {
+    console.log("Connected to DB");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+async function main() {
+  await mongoose.connect(dbUrl);
+}
 
 app.engine("ejs", engine);
 app.set("view engine", "ejs");
@@ -34,41 +38,50 @@ app.use(methodOverride("_method"));
 app.get("/", (req, res) => {
   res.redirect("/members/new");
 });
+
 app.get("/home", (req, res) => {
   res.render("users/home");
 });
+
 app.get("/members", async (req, res) => {
   const allMembers = await User.find();
   res.render("users/members", { allMembers });
 });
+
 app.get("/members/new", (req, res) => {
   res.render("users/new");
 });
+
 app.post("/members", async (req, res) => {
   const newUser = new User(req.body.user);
   await newUser.save();
   res.redirect("/members");
 });
+
 app.get("/members/:id", async (req, res) => {
   let { id } = req.params;
   let user = await User.findById(id);
   res.render("users/show", { user });
 });
+
 app.get("/members/:id/edit", async (req, res) => {
   let { id } = req.params;
   let user = await User.findById(id);
   res.render("users/edit", { user });
 });
+
 app.patch("/members/:id", async (req, res) => {
   let { id } = req.params;
   await User.findByIdAndUpdate(id, { ...req.body.user });
   res.redirect(`/members/${id}`);
 });
+
 app.delete("/members/:id", async (req, res) => {
   let { id } = req.params;
   await User.findByIdAndDelete(id);
   res.redirect("/members");
 });
+
 app.get("/chat", async (req, res) => {
   try {
     const messages = await Message.find().sort({ timestamp: 1 }).exec();
@@ -107,7 +120,6 @@ io.on("connection", (socket) => {
     console.log("User disconnected");
   });
 });
-
 
 server.listen(8080, () => {
   console.log("Server is listening on port 8080");
