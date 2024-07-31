@@ -81,6 +81,33 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
+// Registration routes
+app
+  .route("/register")
+  .get((req, res) => res.render("register"))
+  .post(async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+      // Check if user already exists
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        req.flash("error_msg", "Username already exists");
+        return res.redirect("/register");
+      }
+
+      // Create a new user
+      const newUser = new User({ username, password });
+      await newUser.save();
+      req.flash("success_msg", "Registration successful. You can now log in.");
+      res.redirect("/login");
+    } catch (err) {
+      console.error("Error registering user:", err);
+      req.flash("error_msg", "An error occurred during registration");
+      res.redirect("/register");
+    }
+  });
+
 // Chat page
 app
   .route("/chat")

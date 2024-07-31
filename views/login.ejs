@@ -1,26 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
+<%= layout("layouts/boilerplate") %>
+
+<div class="clr">
+  <div class="lr">
     <h1>Login</h1>
-    <form action="/login" method="POST">
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit">Login</button>
+    <form class="details" action="/login" method="POST">
+      <div class="lr-details">
+        <input
+          type="text"
+          id="username"
+          name="username"
+          required
+          placeholder="Username"
+        />
+      </div>
+      <div class="lr-details">
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          placeholder="Password"
+        />
+      </div>
+
+      <button
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          margin-top: 5px;
+          background-color: rgba(0, 0, 0, 0.5);
+          height: 25px;
+          border-radius: 20px;
+          color: white;
+        "
+        class="btn"
+        type="submit"
+      >
+        Login
+      </button>
     </form>
     <% if (error_msg) { %>
-        <p><%= error_msg %></p>
+    <p style="color: white"><%= error_msg %></p>
     <% } %>
-</body>
-</html>
+    <div class="register-link">
+      <p>Don't have an account? <a href="/register">Register here</a></p>
+    </div>
+  </div>
+</div>
