@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
@@ -11,6 +10,7 @@ const connectDB = require("./db");
 const User = require("./models/User");
 const Message = require("./models/Message");
 const engine = require("ejs-mate");
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
@@ -22,6 +22,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
+
+
 
 app.use(
   session({
@@ -48,9 +50,9 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-app.get("/", (req, res) => {
-  res.render("home");
-});
+app.get("/",(req,res) => {
+    res.render("home")
+})
 
 app.get("/home", (req, res) => {
   res.render("home");
@@ -81,8 +83,8 @@ app.post("/login", async (req, res) => {
 
 app.get("/signup", (req, res) => {
   res.render("signup", {
-    layout: "layouts/boilerplate",
-    showNavbar: false,
+    layout: "layouts/boilerplate", 
+    showNavbar: false, 
   });
 });
 
