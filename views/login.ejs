@@ -1,25 +1,23 @@
 <%= layout("layouts/boilerplate") %>
-
 <div class="clr">
   <div class="lr">
     <h1>Login</h1>
-    <form class="details" action="/login" method="POST">
+    <form action="/login" method="POST">
       <div class="lr-details">
         <input
-          type="text"
-          id="username"
+          class="lr-details"
           name="username"
-          required
           placeholder="Username"
+          required
         />
       </div>
+
       <div class="lr-details">
         <input
-          type="password"
-          id="password"
           name="password"
-          required
+          type="password"
           placeholder="Password"
+          required
         />
       </div>
 
@@ -41,11 +39,7 @@
         Login
       </button>
     </form>
-    <% if (error_msg) { %>
-    <p style="color: white"><%= error_msg %></p>
-    <% } %>
-    <div class="register-link">
-      <p>Don't have an account? <a href="/register">Register here</a></p>
-    </div>
+    <br />
+    <p>create a new account <a href="/signup">Sign Up</a></p>
   </div>
 </div>
